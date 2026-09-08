@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "com.gamezone.scoreboard.app-debug-45:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.gamezone.scoreboard.app-main-47:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.gamezone.scoreboard.app-debug-45:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.gamezone.scoreboard.app-main-47:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.gamezone.scoreboard.app-debug-45:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.gamezone.scoreboard.app-main-47:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.gamezone.scoreboard.app-debug-45:/font_anton.ttf.flat",
+        "source": "com.gamezone.scoreboard.app-main-47:/font/anton.ttf"
+    },
+    {
+        "merged": "com.gamezone.scoreboard.app-debug-45:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.gamezone.scoreboard.app-main-47:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.gamezone.scoreboard.app-debug-45:/font_rajdhani.ttf.flat",
+        "source": "com.gamezone.scoreboard.app-main-47:/font/rajdhani.ttf"
+    }
+]

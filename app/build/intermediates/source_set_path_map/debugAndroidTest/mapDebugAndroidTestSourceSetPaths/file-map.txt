@@ -1,0 +1,4 @@
+com.gamezone.scoreboard.test.app-androidTest-0 C:\Users\hp\Desktop\Scoreboard\app\build\generated\res\resValues\androidTest\debug
+com.gamezone.scoreboard.test.app-mergeDebugAndroidTestResources-1 C:\Users\hp\Desktop\Scoreboard\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.gamezone.scoreboard.test.app-mergeDebugAndroidTestResources-2 C:\Users\hp\Desktop\Scoreboard\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.gamezone.scoreboard.test.app-debugAndroidTest-3 C:\Users\hp\Desktop\Scoreboard\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
