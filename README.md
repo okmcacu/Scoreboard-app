@@ -15,34 +15,17 @@ Play anything with a "loser pays" rule — video games, board games, card games,
 ---
 ## 📸 Preview
 
-<div align="center">
-  <table>
-    <tr bgcolor="#0d1117">
-      <td align="center" width="50%"><b>Board</b></td>
-      <td align="center" width="50%"><b>Settle Up</b></td>
-    </tr>
-    <tr bgcolor="#000000">
-      <td align="center" valign="middle">
-        <img width="100%" alt="frontpage" src="https://github.com/user-attachments/assets/ff572338-650c-4a32-bd33-70f1616ab49f" />
-      </td>
-      <td align="center" valign="middle">
-        <img width="100%" alt="settle" src="https://github.com/user-attachments/assets/237ef622-ceca-4648-b653-be668eb548fe" />
-      </td>
-    </tr>
-    <tr bgcolor="#0d1117">
-      <td align="center"><b>History</b></td>
-      <td align="center"><b>Stats</b></td>
-    </tr>
-    <tr bgcolor="#000000">
-      <td align="center" valign="middle">
-        <img width="100%" alt="history" src="https://github.com/user-attachments/assets/2bfb6b63-0a1a-4de6-ad46-7f06efbb5b25" />
-      </td>
-      <td align="center" valign="middle">
-        <img width="100%" alt="stats" src="https://github.com/user-attachments/assets/78471636-1d87-4106-a3fd-8a4b0badddb2" />
-      </td>
-    </tr>
-  </table>
-</div>
+## 📸 Preview
+
+<p align="center">
+  <img width="48%" alt="frontpage" src="https://github.com/user-attachments/assets/ff572338-650c-4a32-bd33-70f1616ab49f" />
+  <img width="48%" alt="settle" src="https://github.com/user-attachments/assets/237ef622-ceca-4648-b653-be668eb548fe" />
+</p>
+<p align="center">
+  <img width="48%" alt="history" src="https://github.com/user-attachments/assets/2bfb6b63-0a1a-4de6-ad46-7f06efbb5b25" />
+  <img width="48%" alt="stats" src="https://github.com/user-attachments/assets/78471636-1d87-4106-a3fd-8a4b0badddb2" />
+</p>
+---
 ##  Features
 
 * **Board** — Log a loss for any player in any game with one tap; pick the winner and both tallies update instantly. Undo the last entry if you tap the wrong button.
