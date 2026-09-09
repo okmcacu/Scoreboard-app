@@ -13,18 +13,13 @@ Play anything with a "loser pays" rule — video games, board games, card games,
 *  **Download App:** [Latest Release](https://github.com/okmcacu/Scoreboard-app/releases/latest)
 
 ---
-
-## 📸 Preview
-
 ## 📸 Preview
 
 | Board | Settle Up |
 | :---: | :---: |
-| <img width="250" alt="frontpage" src="https://github.com/user-attachments/assets/ff572338-650c-4a32-bd33-70f1616ab49f" /> | <img width="250" alt="settle" src="https://github.com/user-attachments/assets/237ef622-ceca-4648-b653-be668eb548fe" /> |
+| <img width="100%" alt="frontpage" src="https://github.com/user-attachments/assets/ff572338-650c-4a32-bd33-70f1616ab49f" /> | <img width="100%" alt="settle" src="https://github.com/user-attachments/assets/237ef622-ceca-4648-b653-be668eb548fe" /> |
 | **History** | **Stats** |
-| <img width="250" alt="history" src="https://github.com/user-attachments/assets/2bfb6b63-0a1a-4de6-ad46-7f06efbb5b25" /> | <img width="250" alt="stats" src="https://github.com/user-attachments/assets/78471636-1d87-4106-a3fd-8a4b0badddb2" /> |
----
-
+| <img width="100%" alt="history" src="https://github.com/user-attachments/assets/2bfb6b63-0a1a-4de6-ad46-7f06efbb5b25" /> | <img width="100%" alt="stats" src="https://github.com/user-attachments/assets/78471636-1d87-4106-a3fd-8a4b0badddb2" /> |
 ##  Features
 
 * **Board** — Log a loss for any player in any game with one tap; pick the winner and both tallies update instantly. Undo the last entry if you tap the wrong button.
