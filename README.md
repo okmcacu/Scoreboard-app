@@ -18,7 +18,7 @@ Play anything with a "loser pays" rule — video games, board games, card games,
 
 | Board | Settle Up |
 | :---: | :---: |
-| ![Board tab](https://raw.githubusercontent.com/okmcacu/Scoreboard-app/main/screenshots/screen1.png) | ![Settle tab](https://raw.githubusercontent.com/okmcacu/Scoreboard-app/main/screenshots/screen2.png) |
+| ![Board tab](https://raw.githubusercontent.com/okmcacu/Scoreboard-app/main/screenshots/frontpage.png) | ![Settle tab](https://raw.githubusercontent.com/okmcacu/Scoreboard-app/main/screenshots/settle.png) |
 
 ---
 
