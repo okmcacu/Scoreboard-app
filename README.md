@@ -1,1 +1,73 @@
 # Scoreboard-app
+# Scoreboard 
+
+A game-time companion that tracks who's losing, tallies what they owe, and settles the bill.
+
+Play anything with a "loser pays" rule — video games, board games, card games, sports, whatever your group plays. Set a price per loss for each game, log losses as you go, and let the app work out exactly who owes who.
+
+---
+
+##  Quick Links
+
+*  **Live Web Demo:** [Try Scoreboard Online](https://okmcacu.github.io/Scoreboard-app/)
+*  **Download App:** [Latest Release](https://github.com/okmcacu/Scoreboard-app/releases/latest)
+
+---
+
+## 📸 Preview
+
+| Board | Settle Up |
+| :---: | :---: |
+| ![Board tab](https://raw.githubusercontent.com/okmcacu/Scoreboard-app/main/screenshots/screen1.png) | ![Settle tab](https://raw.githubusercontent.com/okmcacu/Scoreboard-app/main/screenshots/screen2.png) |
+
+---
+
+##  Features
+
+* **Board** — Log a loss for any player in any game with one tap; pick the winner and both tallies update instantly. Undo the last entry if you tap the wrong button.
+* **Stats** — All-time win/loss record and win % per player, per game. Export your stats to CSV, or import a CSV to restore/merge history.
+* **Settle** — Automatically calculates what each player owes, broken down by game (losses × price per loss), plus a grand total. Mark it "Paid" to close out the round.
+* **History** — Every past settlement is kept with its date, total, and per-player breakdown, so you can look back at who paid what.
+* **Games & Players** — Add any game you want to track, set a custom price-per-loss for each one, and manage your player roster, all from one screen.
+
+---
+
+##  Built With
+
+* **App:** Kotlin (Android)
+* **Web Preview / Demo:** HTML, CSS, JavaScript
+* **Hosting:** GitHub Pages
+* **Version Control:** Git & GitHub
+
+---
+
+##  Getting Started
+
+**Try it in the browser** — no install needed, just open the [live demo](https://okmcacu.github.io/Scoreboard-app/).
+
+**Install the app:**
+1. Go to the [Releases page](https://github.com/okmcacu/Scoreboard-app/releases/latest).
+2. Download the latest build.
+3. Install it on your device (you may need to allow installs from unknown sources for a sideloaded APK).
+
+**Run the source locally:**
+```bash
+git clone https://github.com/okmcacu/Scoreboard-app.git
+cd Scoreboard-app
+```
+Open the project in Android Studio to build and run it yourself.
+
+---
+
+##  Contributing
+
+Pull requests are welcome. A few ideas if you're looking for a place to start:
+* Persistent storage across sessions
+* Editable/deletable individual loss entries
+* Multi-currency support
+
+---
+
+##  License
+
+This project is open-source and available under the [MIT License](LICENSE).
