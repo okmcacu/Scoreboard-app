@@ -24,15 +24,11 @@ Play anything with a "loser pays" rule — video games, board games, card games,
       <td align="center" width="50%"><b>Settle Up</b></td>
     </tr>
     <tr bgcolor="#000000">
-      <td align="center" valign="top">
-        <div style="height: 520px; overflow: hidden;">
-          <img width="100%" alt="frontpage" src="https://github.com/user-attachments/assets/ff572338-650c-4a32-bd33-70f1616ab49f" />
-        </div>
+      <td align="center" valign="middle">
+        <img height="450" alt="frontpage" src="https://github.com/user-attachments/assets/ff572338-650c-4a32-bd33-70f1616ab49f" />
       </td>
-      <td align="center" valign="top">
-        <div style="height: 520px; overflow: hidden; background-color: #000;">
-          <img width="100%" alt="settle" src="https://github.com/user-attachments/assets/237ef622-ceca-4648-b653-be668eb548fe" />
-        </div>
+      <td align="center" valign="middle">
+        <img height="450" alt="settle" src="https://github.com/user-attachments/assets/237ef622-ceca-4648-b653-be668eb548fe" />
       </td>
     </tr>
     <tr bgcolor="#0d1117">
@@ -40,15 +36,11 @@ Play anything with a "loser pays" rule — video games, board games, card games,
       <td align="center"><b>Stats</b></td>
     </tr>
     <tr bgcolor="#000000">
-      <td align="center" valign="top">
-        <div style="height: 520px; overflow: hidden; background-color: #000;">
-          <img width="100%" alt="history" src="https://github.com/user-attachments/assets/2bfb6b63-0a1a-4de6-ad46-7f06efbb5b25" />
-        </div>
+      <td align="center" valign="middle">
+        <img height="450" alt="history" src="https://github.com/user-attachments/assets/2bfb6b63-0a1a-4de6-ad46-7f06efbb5b25" />
       </td>
-      <td align="center" valign="top">
-        <div style="height: 520px; overflow: hidden;">
-          <img width="100%" alt="stats" src="https://github.com/user-attachments/assets/78471636-1d87-4106-a3fd-8a4b0badddb2" />
-        </div>
+      <td align="center" valign="middle">
+        <img height="450" alt="stats" src="https://github.com/user-attachments/assets/78471636-1d87-4106-a3fd-8a4b0badddb2" />
       </td>
     </tr>
   </table>
