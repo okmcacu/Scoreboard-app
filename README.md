@@ -18,8 +18,8 @@ Play anything with a "loser pays" rule — video games, board games, card games,
 
 | Board | Settle Up |
 | :---: | :---: |
-| ![Board tab](screenshots/frontpage.png)<img width="537" height="953" alt="frontpage" src="https://github.com/user-attachments/assets/ff572338-650c-4a32-bd33-70f1616ab49f" />
- | ![Settle tab](screenshots/settle.png) |
+| ![Board tab]<img width="537" height="953" alt="frontpage" src="https://github.com/user-attachments/assets/ff572338-650c-4a32-bd33-70f1616ab49f" />
+ | ![Settle tab]<img width="490" height="948" alt="settle" src="https://github.com/user-attachments/assets/237ef622-ceca-4648-b653-be668eb548fe" /> |
 ---
 
 ##  Features
