@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Scoreboard Preview</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #07090a;
+  --surface: #12100e;
+  --surface-2: #181513;
+  --surface-raised: #201c19;
+  --ink: #f4f1ea;
+  --muted: #8a8781;
+  --green: #a6ff2e;
+  --green-deep: #4c7014;
+  --red: #ff3b4e;
+  --red-deep: #7a1420;
+  --gold: #ffc94a;
+  --gold-deep: #8a6a1f;
+  --line: rgba(244, 241, 234, 0.09);
+  --line-strong: rgba(244, 241, 234, 0.2);
+  --font-display: 'Anton', sans-serif;
+  --font-num: 'Rajdhani', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 700px 400px at 15% -5%, rgba(166, 255, 46, 0.10), transparent 60%),
+    radial-gradient(ellipse 700px 400px at 100% 10%, rgba(255, 59, 78, 0.10), transparent 60%),
+    repeating-linear-gradient(115deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 5px);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+}
+button { font-family: inherit; cursor: pointer; }
+input { font-family: inherit; }
+::selection { background: var(--green); color: var(--bg); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 3px; }
+
+.app { max-width: 480px; width: 100%; min-height: 100vh; display: flex; flex-direction: column; }
+.header { padding: 22px 20px 14px; display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 2px solid var(--line); }
+.header h1 { font-family: var(--font-display); font-size: 32px; letter-spacing: 0.5px; margin: 0; line-height: 1; text-transform: uppercase; }
+.header .eyebrow { display: block; font-family: var(--font-num); font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--green); margin-bottom: 4px; }
+.header .tally { font-family: var(--font-num); font-size: 11px; font-weight: 600; color: var(--muted); text-align: right; text-transform: uppercase; letter-spacing: 1px; }
+.header .tally b { display: block; color: var(--red); font-size: 30px; font-weight: 700; line-height: 1; margin-bottom: 2px; }
+.main { flex: 1; overflow-y: auto; padding: 4px 20px 100px; }
+.nav { position: sticky; bottom: 0; display: flex; background: var(--surface); border-top: 1px solid var(--line); max-width: 480px; margin: 0 auto; width: 100%; }
+.nav button { flex: 1; background: none; border: none; color: var(--muted); padding: 12px 4px 10px; font-size: 11px; font-family: var(--font-num); font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; border-top: 2px solid transparent; }
+.nav button.active { color: var(--green); border-top: 2px solid var(--green); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.section-label { font-family: var(--font-num); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin: 22px 0 10px; }
+.section-label:first-child { margin-top: 4px; }
+.empty { text-align: center; padding: 40px 16px; color: var(--muted); font-size: 13px; border: 1px dashed var(--line-strong); border-radius: 10px; }
+.stat-strip { display: flex; gap: 10px; margin-bottom: 18px; }
+.stat-box { flex: 1; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 12px; text-align: center; }
+.stat-box .v { font-family: var(--font-display); font-size: 28px; color: var(--gold); line-height: 1; }
+.stat-box.losses .v { color: var(--red); }
+.stat-box .l { font-family: var(--font-num); font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+.game-card { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--green); border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+.game-card.alt { border-left-color: var(--red); }
+.game-card.gold { border-left-color: var(--gold); }
+.game-card-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: var(--surface-2); }
+.game-card-head .name { font-family: var(--font-display); font-size: 19px; letter-spacing: 0.5px; text-transform: uppercase; }
+.game-card-head .meta { font-family: var(--font-num); font-size: 11px; font-weight: 700; color: var(--muted); text-align: right; text-transform: uppercase; }
+.game-card-head .meta b { color: var(--red); font-size: 14px; }
+.game-player-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.game-player-row .pname { flex: 1; font-weight: 600; font-size: 14px; min-width: 60px; }
+.game-player-row .counts { display: flex; gap: 10px; font-family: var(--font-num); font-size: 12px; font-weight: 700; }
+.game-player-row .counts .w { color: var(--green); }
+.game-player-row .counts .l { color: var(--red); }
+.score-btn-group { display: flex; gap: 6px; }
+.score-btn { border: none; border-radius: 6px; padding: 7px 10px; font-family: var(--font-num); font-weight: 700; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
+.score-btn.win { background: rgba(166,255,46,0.14); color: var(--green); }
+.score-btn.loss { background: rgba(255,59,78,0.14); color: var(--red); }
+.score-btn.minus { background: var(--surface-2); color: var(--muted); padding: 7px 8px; font-size: 13px; }
+.no-players-hint { padding: 14px; font-size: 12px; color: var(--muted); text-align: center; }
+.owed-card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+.owed-head { display: flex; justify-content: space-between; align-items: center; padding: 14px; }
+.owed-head .name { font-weight: 700; font-size: 16px; }
+.owed-head .amt { font-family: var(--font-display); font-size: 26px; color: var(--gold); }
+.owed-breakdown { padding: 0 14px 12px; }
+.owed-line { display: flex; justify-content: space-between; font-family: var(--font-num); font-size: 12px; color: var(--muted); padding: 4px 0; font-weight: 600; }
+.owed-line span:last-child { color: var(--ink); }
+.grand-total { display: flex; justify-content: space-between; align-items: center; padding: 18px 16px; background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: 10px; margin: 18px 0; }
+.grand-total .l { font-family: var(--font-num); font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+.grand-total .v { font-family: var(--font-display); font-size: 32px; color: var(--gold); }
+.settle-btn { width: 100%; background: var(--green); border: none; color: var(--bg); font-family: var(--font-display); font-size: 20px; letter-spacing: 0.5px; text-transform: uppercase; padding: 15px 0; border-radius: 10px; }
+.settle-btn:disabled { background: var(--surface-2); color: var(--muted); }
+.settlement { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+.settlement-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: var(--surface-2); }
+.settlement-head .date { font-family: var(--font-num); font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.settlement-head .total { font-family: var(--font-display); font-size: 20px; color: var(--gold); }
+.settlement-body { padding: 8px 14px 12px; }
+.settlement-player { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.settlement-player:last-child { border-bottom: none; }
+.settlement-player .row1 { display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+.settlement-player .row1 .amt { color: var(--gold); font-family: var(--font-num); font-weight: 700; }
+.settlement-player .cat-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.cat-tag { font-family: var(--font-num); font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 5px; background: rgba(255,59,78,0.12); color: var(--red); text-transform: uppercase; }
+.settlement-foot { padding: 8px 14px 12px; text-align: right; }
+.settlement-foot button { background: none; border: none; color: var(--red); font-family: var(--font-num); font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.manage-list-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; gap: 10px; }
+.manage-list-row:last-child { border-bottom: none; }
+.manage-list-row .name { font-weight: 600; flex: 1; }
+.manage-list-row button.remove { background: none; border: none; color: var(--red); font-family: var(--font-num); font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.price-edit { display: flex; align-items: center; gap: 4px; background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: 6px; padding: 4px 8px; }
+.price-edit input { width: 46px; background: none; border: none; color: var(--gold); font-family: var(--font-num); font-weight: 700; font-size: 14px; text-align: right; }
+.price-edit input:focus { outline: none; }
+.price-edit .unit { font-family: var(--font-num); font-size: 10px; color: var(--muted); font-weight: 700; }
+.inline-add { display: flex; gap: 8px; margin-top: 10px; }
+.inline-add input { flex: 1; background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: 8px; padding: 10px 12px; color: var(--ink); font-size: 14px; }
+.inline-add input.price-input { flex: 0 0 80px; color: var(--gold); font-family: var(--font-num); font-weight: 700; }
+.inline-add button { background: var(--green); border: none; color: var(--bg); font-weight: 700; border-radius: 8px; padding: 0 16px; font-size: 13px; font-family: var(--font-num); text-transform: uppercase; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 50; }
+.modal-panel { background: var(--surface-raised); border: 1px solid var(--line-strong); border-radius: 14px; padding: 20px; width: 100%; max-width: 360px; }
+.modal-title { font-weight: 700; font-size: 16px; text-align: center; }
+.modal-sub { display: block; font-family: var(--font-num); font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px; }
+.modal-options { display: flex; flex-direction: column; gap: 8px; margin: 18px 0 6px; }
+.modal-option { background: var(--surface-2); border: 1px solid var(--line-strong); color: var(--ink); font-weight: 600; font-size: 15px; padding: 12px; border-radius: 8px; text-align: center; }
+.modal-option:active { background: rgba(166,255,46,0.14); border-color: var(--green); }
+.modal-empty { text-align: center; color: var(--muted); font-size: 13px; padding: 10px 0 4px; }
+.modal-cancel { width: 100%; background: none; border: none; color: var(--muted); font-family: var(--font-num); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 10px 0 0; }
+
+.stats-card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+.stats-card-head { font-family: var(--font-display); font-size: 18px; letter-spacing: 0.5px; text-transform: uppercase; padding: 12px 14px; background: var(--surface-2); }
+.stats-table { width: 100%; border-collapse: collapse; }
+.stats-table th { font-family: var(--font-num); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); text-align: left; padding: 8px 14px; }
+.stats-table th:not(:first-child), .stats-table td:not(:first-child) { text-align: center; }
+.stats-table td { padding: 9px 14px; border-top: 1px solid var(--line); font-size: 14px; font-weight: 600; }
+.stats-table td.w { color: var(--green); }
+.stats-table td.l { color: var(--red); }
+.stats-actions { display: flex; gap: 8px; margin-bottom: 14px; }
+.stats-action-btn { flex: 1; background: var(--surface-2); border: 1px solid var(--line-strong); color: var(--ink); font-family: var(--font-num); font-weight: 700; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; padding: 11px 0; border-radius: 8px; }
+.stats-action-btn.primary { background: var(--green); color: var(--bg); border: none; }
+.clear-history-btn { width: 100%; margin-top: 16px; background: none; border: 1px solid var(--red-deep); color: var(--red); font-family: var(--font-num); font-weight: 700; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 12px 0; border-radius: 8px; }
+.clear-history-btn:disabled { opacity: 0.4; border-color: var(--line-strong); color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+let state = {
+  players: [
+    { id: "p1", name: "Mikiyas" },
+    { id: "p2", name: "Nathan" },
+    { id: "p3", name: "Yonas" },
+  ],
+  categories: [
+    { id: "c1", name: "EA FC", price: 20 },
+    { id: "c2", name: "UFC", price: 20 },
+    { id: "c3", name: "Pool", price: 20 },
+  ],
+  tallies: {
+    c1: { p1: { wins: 3, losses: 1 }, p2: { wins: 1, losses: 3 } },
+    c3: { p1: { wins: 0, losses: 2 }, p3: { wins: 2, losses: 0 } },
+  },
+  allTimeStats: {
+    c1: { p1: { wins: 3, losses: 1 }, p2: { wins: 1, losses: 3 } },
+    c3: { p1: { wins: 0, losses: 2 }, p3: { wins: 2, losses: 0 } },
+  },
+  settlements: [],
+};
+let tab = "board";
+let modal = null; // { catId, loserId }
+
+function uid(prefix) { return prefix + "_" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function getTally(catId, playerId) { return (state.tallies[catId] && state.tallies[catId][playerId]) || { wins: 0, losses: 0 }; }
+function getAllTimeTally(catId, playerId) { return (state.allTimeStats[catId] && state.allTimeStats[catId][playerId]) || { wins: 0, losses: 0 }; }
+function hasAnyHistory() {
+  if (state.settlements.length > 0) return true;
+  return Object.values(state.allTimeStats).some(byP => Object.values(byP).some(t => (t.wins||0) > 0 || (t.losses||0) > 0));
+}
+function totalLosses() {
+  let t = 0;
+  Object.values(state.tallies).forEach(byP => Object.values(byP).forEach(x => t += x.losses||0));
+  return t;
+}
+function computeOwed() {
+  return state.players.map(p => {
+    const breakdown = state.categories.map(c => {
+      const t = getTally(c.id, p.id);
+      return { categoryId: c.id, categoryName: c.name, wins: t.wins, losses: t.losses, price: c.price, amount: t.losses * c.price };
+    }).filter(b => b.wins > 0 || b.losses > 0);
+    const totalOwed = breakdown.reduce((s,b)=>s+b.amount,0);
+    return { playerId: p.id, name: p.name, breakdown, totalOwed };
+  });
+}
+function totalOwedAll() { return computeOwed().reduce((s,p)=>s+p.totalOwed,0); }
+
+function csvEscape(val) {
+  const s = String(val);
+  if (/[",\n]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+function statsToCSV() {
+  const rows = [["Game","Player","Wins","Losses"]];
+  state.categories.forEach(c=>{
+    state.players.forEach(p=>{
+      const t = getAllTimeTally(c.id,p.id);
+      rows.push([c.name, p.name, t.wins, t.losses]);
+    });
+  });
+  return rows.map(r=>r.map(csvEscape).join(",")).join("\n");
+}
+function downloadStatsCSV() {
+  const csv = statsToCSV();
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "stats.csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function parseCSVLine(line) {
+  const result = [];
+  let cur = '', inQuotes = false;
+  for (let i=0;i<line.length;i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"') { if (line[i+1] === '"') { cur+='"'; i++; } else inQuotes = false; }
+      else cur += ch;
+    } else {
+      if (ch === '"') inQuotes = true;
+      else if (ch === ',') { result.push(cur); cur=''; }
+      else cur += ch;
+    }
+  }
+  result.push(cur);
+  return result;
+}
+function importStatsCSV(text) {
+  const lines = text.split(/\r?\n/).filter(l=>l.trim().length>0);
+  if (lines.length===0) return;
+  let startIdx = 0;
+  const first = parseCSVLine(lines[0]).map(s=>s.trim().toLowerCase());
+  if (first[0]==="game" && first[1]==="player") startIdx = 1;
+  for (let i=startIdx;i<lines.length;i++) {
+    const cols = parseCSVLine(lines[i]).map(s=>s.trim());
+    if (cols.length<4) continue;
+    const [gameName, playerName, winsStr, lossesStr] = cols;
+    if (!gameName || !playerName) continue;
+    let cat = state.categories.find(c=>c.name.toLowerCase()===gameName.toLowerCase());
+    if (!cat) { cat = { id: uid('c'), name: gameName, price: 20 }; state.categories.push(cat); }
+    let player = state.players.find(p=>p.name.toLowerCase()===playerName.toLowerCase());
+    if (!player) { player = { id: uid('p'), name: playerName }; state.players.push(player); }
+    if (!state.allTimeStats[cat.id]) state.allTimeStats[cat.id] = {};
+    state.allTimeStats[cat.id][player.id] = { wins: Number(winsStr)||0, losses: Number(lossesStr)||0 };
+  }
+  render();
+}
+
+function render() {
+  const root = document.getElementById("root");
+  root.innerHTML = `
+    <div class="app">
+      <div class="header">
+        <div><span class="eyebrow">Game Zone</span><h1>Scoreboard</h1></div>
+        <div class="tally"><b>${totalLosses()}</b>losses this round</div>
+      </div>
+      <div class="main">${renderTab()}</div>
+      <div class="nav">
+        ${navBtn("board","Board")}${navBtn("stats","Stats")}${navBtn("settle","Settle")}${navBtn("history","History")}${navBtn("games","Games")}
+      </div>
+    </div>
+    ${modal ? renderModal() : ''}`;
+  attachHandlers();
+}
+function navBtn(id,label) { return `<button data-tab="${id}" class="${tab===id?'active':''}">${label}</button>`; }
+
+function renderTab() {
+  if (tab==="board") return renderBoard();
+  if (tab==="stats") return renderStats();
+  if (tab==="settle") return renderSettle();
+  if (tab==="history") return renderHistory();
+  if (tab==="games") return renderGames();
+}
+
+function renderModal() {
+  const cat = state.categories.find(c=>c.id===modal.catId);
+  const loser = state.players.find(p=>p.id===modal.loserId);
+  const others = state.players.filter(p=>p.id!==modal.loserId);
+  return `
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal-panel">
+        <div class="modal-title">${loser ? loser.name : ''} lost at ${cat ? cat.name : ''}<span class="modal-sub">Who won?</span></div>
+        <div class="modal-options">
+          ${others.length ? others.map(p=>`<button class="modal-option" data-winner="${p.id}">${p.name}</button>`).join('') : `<div class="modal-empty">Add another player first.</div>`}
+        </div>
+        <button class="modal-cancel" id="modal-cancel">Cancel</button>
+      </div>
+    </div>`;
+}
+
+const BORDER_CLASSES = ["", "alt", "gold"];
+
+function renderBoard() {
+  const losses = totalLosses(), owed = totalOwedAll();
+  return `
+    <div class="stat-strip">
+      <div class="stat-box losses"><div class="v">${losses}</div><div class="l">Total Losses</div></div>
+      <div class="stat-box owed"><div class="v">${owed.toLocaleString()}</div><div class="l">Birr Owed</div></div>
+    </div>
+    ${state.categories.length===0 ? `<div class="empty">No games yet. Add one from the Games tab.</div>` :
+    state.categories.map((c,i)=>{
+      const categoryLosses = state.players.reduce((s,p)=>s+getTally(c.id,p.id).losses,0);
+      return `
+      <div class="game-card ${BORDER_CLASSES[i%3]}">
+        <div class="game-card-head">
+          <span class="name">${c.name}</span>
+          <span class="meta">${c.price} Birr / loss<br><b>${categoryLosses}</b> losses</span>
+        </div>
+        ${state.players.length===0 ? `<div class="no-players-hint">Add players from the Games tab.</div>` :
+        state.players.map(p=>{
+          const t = getTally(c.id,p.id);
+          return `
+          <div class="game-player-row">
+            <span class="pname">${p.name}</span>
+            <span class="counts"><span class="w">${t.wins}W</span><span class="l">${t.losses}L</span></span>
+            <div class="score-btn-group">
+              <button class="score-btn loss" data-loss="${c.id}|${p.id}">Log Loss</button>
+              ${(t.wins>0||t.losses>0) ? `<button class="score-btn minus" data-undo="${c.id}|${p.id}">↺</button>` : ''}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    }).join('')}
+  `;
+}
+
+function renderStats() {
+  if (state.categories.length===0) return `<div class="empty">No games yet. Add one from the Games tab.</div>`;
+  return `
+    <div class="section-label">All-Time Stats</div>
+    <div class="stats-actions">
+      <button id="stats-download-btn" class="stats-action-btn">Download CSV</button>
+      <button id="stats-upload-btn" class="stats-action-btn primary">Upload CSV</button>
+      <input type="file" id="stats-csv-file" accept=".csv" style="display:none" />
+    </div>
+    ${state.categories.map(c=>{
+      const rows = state.players.map(p=>{
+        const t = getAllTimeTally(c.id,p.id);
+        const total = t.wins+t.losses;
+        const winPct = total>0 ? Math.round((t.wins/total)*100) : 0;
+        return { name: p.name, wins: t.wins, losses: t.losses, winPct };
+      }).sort((a,b)=> b.wins-a.wins || a.losses-b.losses);
+      return `
+      <div class="stats-card">
+        <div class="stats-card-head">${c.name}</div>
+        <table class="stats-table">
+          <thead><tr><th>Player</th><th>W</th><th>L</th><th>Win%</th></tr></thead>
+          <tbody>
+            ${state.players.length===0 ? `<tr><td colspan="4" style="text-align:center;color:var(--muted);">No players yet.</td></tr>` :
+            rows.map(r=>`<tr><td>${r.name}</td><td class="w">${r.wins}</td><td class="l">${r.losses}</td><td>${r.winPct}%</td></tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+    }).join('')}
+  `;
+}
+
+function renderSettle() {
+  const owed = computeOwed();
+  const grandTotal = owed.reduce((s,p)=>s+p.totalOwed,0);
+  const hasAnything = owed.some(p=>p.breakdown.length>0);
+  if (!hasAnything) {
+    return `<div class="empty">Nothing owed yet. Tap + Win / + Loss on the Board tab as you play, then come back here to settle up.</div>
+    <button class="settle-btn" disabled style="margin-top:14px;">Mark as Paid</button>`;
+  }
+  return `
+    ${owed.filter(p=>p.breakdown.length>0).map(p=>`
+      <div class="owed-card">
+        <div class="owed-head"><span class="name">${p.name}</span><span class="amt">${p.totalOwed.toLocaleString()}</span></div>
+        <div class="owed-breakdown">
+          ${p.breakdown.map(b=>`<div class="owed-line"><span>${b.categoryName} · ${b.losses}L × ${b.price}</span><span>${b.amount.toLocaleString()} Birr</span></div>`).join('')}
+        </div>
+      </div>
+    `).join('')}
+    <div class="grand-total"><span class="l">Total to settle</span><span class="v">${grandTotal.toLocaleString()}</span></div>
+    <button class="settle-btn" id="settle-btn">Mark as Paid</button>
+  `;
+}
+
+function renderHistory() {
+  const sorted = [...state.settlements].sort((a,b)=> a.date < b.date ? 1 : -1);
+  if (sorted.length===0) return `<div class="empty">No settlements yet. Settle up from the Settle tab once you've logged some games.</div>`;
+  return sorted.map(s=>`
+    <div class="settlement">
+      <div class="settlement-head"><span class="date">${s.date}</span><span class="total">${s.totalPaid.toLocaleString()} Birr</span></div>
+      <div class="settlement-body">
+        ${s.players.map(p=>`
+          <div class="settlement-player">
+            <div class="row1"><span>${p.name}</span><span class="amt">${p.totalOwed.toLocaleString()} Birr</span></div>
+            <div class="cat-tags">${p.breakdown.map(b=>`<span class="cat-tag">${b.categoryName} ${b.losses}L</span>`).join('')}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="settlement-foot"><button data-delsettlement="${s.id}">Delete</button></div>
+    </div>
+  `).join('');
+}
+
+function renderGames() {
+  return `
+    <div class="section-label">Games</div>
+    <div class="card">
+      ${state.categories.map(c=>`
+        <div class="manage-list-row">
+          <span class="name">${c.name}</span>
+          <div class="price-edit"><input type="number" data-price="${c.id}" value="${c.price}" /><span class="unit">Birr</span></div>
+          <button class="remove" data-delcat="${c.id}">Remove</button>
+        </div>
+      `).join('')}
+      <div class="inline-add">
+        <input type="text" id="new-cat-name" placeholder="Game name" />
+        <input type="number" id="new-cat-price" class="price-input" placeholder="Birr" value="20" />
+        <button id="add-cat-btn">Add</button>
+      </div>
+    </div>
+    <div class="section-label">Players</div>
+    <div class="card">
+      ${state.players.map(p=>`
+        <div class="manage-list-row"><span class="name">${p.name}</span><button class="remove" data-delplayer="${p.id}">Remove</button></div>
+      `).join('')}
+      <div class="inline-add"><input type="text" id="new-player-name" placeholder="Add a player" /><button id="add-player-btn">Add</button></div>
+    </div>
+  `;
+}
+
+function attachHandlers() {
+  document.querySelectorAll('[data-tab]').forEach(el=>el.onclick=()=>{ tab=el.dataset.tab; render(); });
+
+  if (tab==="board") {
+    document.querySelectorAll('[data-loss]').forEach(el=>el.onclick=()=>{
+      const [catId,playerId] = el.dataset.loss.split('|');
+      const others = state.players.filter(p=>p.id!==playerId);
+      if (others.length===0) return;
+      modal = { catId, loserId: playerId };
+      render();
+    });
+    document.querySelectorAll('[data-undo]').forEach(el=>el.onclick=()=>{
+      const [catId,playerId] = el.dataset.undo.split('|');
+      const t = state.tallies[catId][playerId];
+      const at = state.allTimeStats[catId] && state.allTimeStats[catId][playerId];
+      if (t.losses>0) { t.losses--; if (at && at.losses>0) at.losses--; }
+      else if (t.wins>0) { t.wins--; if (at && at.wins>0) at.wins--; }
+      render();
+    });
+  }
+
+  if (modal) {
+    document.querySelectorAll('[data-winner]').forEach(el=>el.onclick=()=>{
+      const winnerId = el.dataset.winner;
+      const { catId, loserId } = modal;
+      if (!state.tallies[catId]) state.tallies[catId]={};
+      if (!state.tallies[catId][loserId]) state.tallies[catId][loserId]={wins:0,losses:0};
+      if (!state.tallies[catId][winnerId]) state.tallies[catId][winnerId]={wins:0,losses:0};
+      state.tallies[catId][loserId].losses++;
+      state.tallies[catId][winnerId].wins++;
+      if (!state.allTimeStats[catId]) state.allTimeStats[catId]={};
+      if (!state.allTimeStats[catId][loserId]) state.allTimeStats[catId][loserId]={wins:0,losses:0};
+      if (!state.allTimeStats[catId][winnerId]) state.allTimeStats[catId][winnerId]={wins:0,losses:0};
+      state.allTimeStats[catId][loserId].losses++;
+      state.allTimeStats[catId][winnerId].wins++;
+      modal = null;
+      render();
+    });
+    const cancelBtn = document.getElementById('modal-cancel');
+    if (cancelBtn) cancelBtn.onclick = () => { modal = null; render(); };
+    const overlay = document.getElementById('modal-overlay');
+    if (overlay) overlay.onclick = (e) => { if (e.target===overlay) { modal = null; render(); } };
+  }
+
+  if (tab==="settle") {
+    const btn = document.getElementById('settle-btn');
+    if (btn) btn.onclick = () => {
+      const owed = computeOwed();
+      const totalPaid = owed.reduce((s,p)=>s+p.totalOwed,0);
+      if (totalPaid<=0) return;
+      state.settlements.push({
+        id: uid('st'), date: new Date().toISOString().slice(0,10),
+        players: owed.filter(p=>p.breakdown.length>0), totalPaid,
+      });
+      state.tallies = {};
+      tab = "history";
+      render();
+    };
+  }
+
+  if (tab==="history") {
+    document.querySelectorAll('[data-delsettlement]').forEach(el=>el.onclick=()=>{
+      const s = state.settlements.find(x=>x.id===el.dataset.delsettlement);
+      if (s) {
+        s.players.forEach(p=>{
+          p.breakdown.forEach(b=>{
+            const at = state.allTimeStats[b.categoryId] && state.allTimeStats[b.categoryId][p.playerId];
+            if (at) {
+              at.wins = Math.max(0, at.wins - (b.wins||0));
+              at.losses = Math.max(0, at.losses - (b.losses||0));
+            }
+          });
+        });
+      }
+      state.settlements = state.settlements.filter(x=>x.id!==el.dataset.delsettlement);
+      render();
+    });
+  }
+
+  if (tab==="stats") {
+    const dlBtn = document.getElementById('stats-download-btn');
+    if (dlBtn) dlBtn.onclick = downloadStatsCSV;
+    const upBtn = document.getElementById('stats-upload-btn');
+    const fileInput = document.getElementById('stats-csv-file');
+    if (upBtn && fileInput) {
+      upBtn.onclick = () => fileInput.click();
+      fileInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => importStatsCSV(String(reader.result));
+        reader.readAsText(file);
+        fileInput.value = '';
+      };
+    }
+  }
+
+  if (tab==="games") {
+    document.querySelectorAll('[data-price]').forEach(el=>el.onchange=()=>{
+      const c = state.categories.find(x=>x.id===el.dataset.price);
+      c.price = Number(el.value)||0;
+      render();
+    });
+    document.querySelectorAll('[data-delcat]').forEach(el=>el.onclick=()=>{
+      state.categories = state.categories.filter(c=>c.id!==el.dataset.delcat);
+      delete state.tallies[el.dataset.delcat];
+      render();
+    });
+    document.querySelectorAll('[data-delplayer]').forEach(el=>el.onclick=()=>{
+      state.players = state.players.filter(p=>p.id!==el.dataset.delplayer);
+      render();
+    });
+    const addCatBtn = document.getElementById('add-cat-btn');
+    if (addCatBtn) addCatBtn.onclick = () => {
+      const name = document.getElementById('new-cat-name').value.trim();
+      const price = Number(document.getElementById('new-cat-price').value) || 0;
+      if (!name) return;
+      state.categories.push({id:uid('c'), name, price});
+      render();
+    };
+    const addPlayerBtn = document.getElementById('add-player-btn');
+    if (addPlayerBtn) addPlayerBtn.onclick = () => {
+      const name = document.getElementById('new-player-name').value.trim();
+      if (!name) return;
+      state.players.push({id:uid('p'), name});
+      render();
+    };
+  }
+}
+
+render();
+</script>
+</body>
+</html>
