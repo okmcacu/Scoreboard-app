@@ -12,6 +12,7 @@ import com.gamezone.scoreboard.model.Category
 import com.gamezone.scoreboard.model.OwedBreakdown
 import com.gamezone.scoreboard.model.OwedPlayer
 import com.gamezone.scoreboard.model.Player
+import com.gamezone.scoreboard.model.PlayerSessionSummary
 import com.gamezone.scoreboard.model.Settlement
 import com.gamezone.scoreboard.model.Tally
 import java.time.LocalDate
@@ -111,6 +112,23 @@ class ScoreboardViewModel(application: Application) : AndroidViewModel(applicati
             } else null
         }
         OwedPlayer(p.id, p.name, breakdown, breakdown.sumOf { it.amount })
+    }
+
+    /**
+     * Per-player totals for the current session. Score is the number of wins; expense share is
+     * the amount owed (losses x game price). Safe with no players, no games or no activity.
+     */
+    fun computeSessionSummary(): List<PlayerSessionSummary> = players.map { p ->
+        var score = 0
+        var losses = 0
+        var share = 0
+        categories.forEach { c ->
+            val t = getTally(c.id, p.id)
+            score += t.wins
+            losses += t.losses
+            share += t.losses * c.price
+        }
+        PlayerSessionSummary(p.id, p.name, score, losses, share)
     }
 
     fun totalOwedAll(): Int = computeOwed().sumOf { it.totalOwed }

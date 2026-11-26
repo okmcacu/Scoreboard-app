@@ -29,6 +29,14 @@ data class Settlement(
     val totalPaid: Int
 )
 
+data class PlayerSessionSummary(
+    val playerId: String,
+    val name: String,
+    val totalScore: Int,
+    val totalLosses: Int,
+    val expenseShare: Int
+)
+
 enum class AppTab(val label: String) {
     BOARD("Board"),
     STATS("Stats"),
