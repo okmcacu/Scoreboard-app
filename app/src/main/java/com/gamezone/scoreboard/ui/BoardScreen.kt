@@ -51,7 +51,7 @@ import com.gamezone.scoreboard.ui.theme.SurfaceRaisedColor
 private data class PendingLoss(val categoryId: String, val loserId: String)
 
 @Composable
-fun BoardScreen(viewModel: ScoreboardViewModel) {
+fun BoardScreen(viewModel: ScoreboardViewModel, onOpenSummary: () -> Unit = {}) {
     var pending by remember { mutableStateOf<PendingLoss?>(null) }
 
     LazyColumn(
@@ -76,6 +76,29 @@ fun BoardScreen(viewModel: ScoreboardViewModel) {
                     value = String.format("%,d", viewModel.totalOwedAll()),
                     valueColor = GoldColor,
                     modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
+        item {
+            Button(
+                onClick = onOpenSummary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 18.dp)
+                    .height(44.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Surface2Color,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                )
+            ) {
+                Text(
+                    text = "SESSION SUMMARY",
+                    fontFamily = RajdhaniFont,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp
                 )
             }
         }
