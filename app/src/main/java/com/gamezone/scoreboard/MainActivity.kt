@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -54,6 +55,7 @@ import com.gamezone.scoreboard.model.AppTab
 import com.gamezone.scoreboard.ui.BoardScreen
 import com.gamezone.scoreboard.ui.GamesScreen
 import com.gamezone.scoreboard.ui.HistoryScreen
+import com.gamezone.scoreboard.ui.SessionSummaryScreen
 import com.gamezone.scoreboard.ui.SettleScreen
 import com.gamezone.scoreboard.ui.StatsScreen
 import com.gamezone.scoreboard.ui.theme.AntonFont
@@ -79,6 +81,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ScoreboardApp(viewModel: ScoreboardViewModel) {
     var tab by remember { mutableStateOf(AppTab.BOARD) }
+    var showSummary by remember { mutableStateOf(false) }
     var showMenu by remember { mutableStateOf(false) }
     var showClearHistoryDialog by remember { mutableStateOf(false) }
 
@@ -245,8 +248,13 @@ fun ScoreboardApp(viewModel: ScoreboardViewModel) {
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
         ) {
+            if (showSummary && tab == AppTab.BOARD) {
+                BackHandler { showSummary = false }
+            }
             when (tab) {
-                AppTab.BOARD -> BoardScreen(viewModel)
+                AppTab.BOARD ->
+                    if (showSummary) SessionSummaryScreen(viewModel) { showSummary = false }
+                    else BoardScreen(viewModel) { showSummary = true }
                 AppTab.STATS -> StatsScreen(viewModel)
                 AppTab.SETTLE -> SettleScreen(viewModel) { tab = AppTab.HISTORY }
                 AppTab.HISTORY -> HistoryScreen(viewModel)
