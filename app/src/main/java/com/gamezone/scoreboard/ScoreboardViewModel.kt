@@ -6,10 +6,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.gamezone.scoreboard.data.ScoreboardRepository
+import com.gamezone.scoreboard.data.ScoreboardSavedState
+import com.gamezone.scoreboard.domain.ScoreCalculator
 import com.gamezone.scoreboard.model.Category
-import com.gamezone.scoreboard.model.OwedBreakdown
 import com.gamezone.scoreboard.model.OwedPlayer
 import com.gamezone.scoreboard.model.Player
 import com.gamezone.scoreboard.model.PlayerSessionSummary
@@ -24,19 +24,11 @@ data class WinnerSelectionState(
     val loserId: String
 )
 
-// Data structure wrapper for JSON serialization
-data class ScoreboardSavedState(
-    val players: List<Player>,
-    val categories: List<Category>,
-    val tallies: Map<String, Map<String, Tally>>,
-    val allTimeStats: Map<String, Map<String, Tally>>,
-    val settlements: List<Settlement>
-)
-
 class ScoreboardViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val prefs = application.getSharedPreferences("scoreboard_prefs", Context.MODE_PRIVATE)
-    private val gson = Gson()
+    private val repository = ScoreboardRepository(
+        application.getSharedPreferences(ScoreboardRepository.PREFS_NAME, Context.MODE_PRIVATE)
+    )
 
     var players by mutableStateOf<List<Player>>(
         listOf(
@@ -73,46 +65,27 @@ class ScoreboardViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private fun saveData() {
-        val state = ScoreboardSavedState(players, categories, tallies, allTimeStats, settlements)
-        val json = gson.toJson(state)
-        prefs.edit().putString("scoreboard_state", json).apply()
+        repository.save(ScoreboardSavedState(players, categories, tallies, allTimeStats, settlements))
     }
 
     private fun loadData() {
-        val json = prefs.getString("scoreboard_state", null) ?: return
-        try {
-            val type = object : TypeToken<ScoreboardSavedState>() {}.type
-            val loadedState: ScoreboardSavedState = gson.fromJson(json, type)
-            players = loadedState.players
-            categories = loadedState.categories
-            tallies = loadedState.tallies
-            allTimeStats = loadedState.allTimeStats
-            settlements = loadedState.settlements
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        val loadedState = repository.load() ?: return
+        players = loadedState.players
+        categories = loadedState.categories
+        tallies = loadedState.tallies
+        allTimeStats = loadedState.allTimeStats
+        settlements = loadedState.settlements
     }
 
-    fun getTally(catId: String, playerId: String): Tally = tallies[catId]?.get(playerId) ?: Tally()
-    fun getAllTimeTally(catId: String, playerId: String): Tally = allTimeStats[catId]?.get(playerId) ?: Tally()
+    fun getTally(catId: String, playerId: String): Tally = ScoreCalculator.getTally(tallies, catId, playerId)
+    fun getAllTimeTally(catId: String, playerId: String): Tally = ScoreCalculator.getTally(allTimeStats, catId, playerId)
 
-    fun totalLosses(): Int = tallies.values.sumOf { byP -> byP.values.sumOf { it.losses } }
-    fun categoryLosses(catId: String): Int = tallies[catId]?.values?.sumOf { it.losses } ?: 0
+    fun totalLosses(): Int = ScoreCalculator.totalLosses(tallies)
+    fun categoryLosses(catId: String): Int = ScoreCalculator.categoryLosses(tallies, catId)
 
-    fun hasAnyHistory(): Boolean {
-        if (settlements.isNotEmpty()) return true
-        return allTimeStats.values.any { byP -> byP.values.any { it.wins > 0 || it.losses > 0 } }
-    }
+    fun hasAnyHistory(): Boolean = ScoreCalculator.hasAnyHistory(allTimeStats, settlements)
 
-    fun computeOwed(): List<OwedPlayer> = players.map { p ->
-        val breakdown = categories.mapNotNull { c ->
-            val t = getTally(c.id, p.id)
-            if (t.wins > 0 || t.losses > 0) {
-                OwedBreakdown(c.id, c.name, t.wins, t.losses, c.price, t.losses * c.price)
-            } else null
-        }
-        OwedPlayer(p.id, p.name, breakdown, breakdown.sumOf { it.amount })
-    }
+    fun computeOwed(): List<OwedPlayer> = ScoreCalculator.computeOwed(players, categories, tallies)
 
     /**
      * Per-player totals for the current session. Score is the number of wins; expense share is
@@ -306,13 +279,7 @@ class ScoreboardViewModel(application: Application) : AndroidViewModel(applicati
         catId: String,
         playerId: String,
         transform: (Tally) -> Tally
-    ): Map<String, Map<String, Tally>> {
-        val byPlayer = (map[catId] ?: emptyMap()).toMutableMap()
-        val current = byPlayer[playerId] ?: Tally()
-        val next = transform(current)
-        byPlayer[playerId] = Tally(maxOf(0, next.wins), maxOf(0, next.losses))
-        return map.toMutableMap().apply { put(catId, byPlayer) }
-    }
+    ) = ScoreCalculator.updateTally(map, catId, playerId, transform)
 }
 
 private fun csvEscape(v: String): String =
