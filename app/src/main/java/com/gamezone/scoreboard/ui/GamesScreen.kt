@@ -52,6 +52,7 @@ fun GamesScreen(viewModel: ScoreboardViewModel) {
     var newCatName by remember { mutableStateOf("") }
     var newCatPrice by remember { mutableStateOf("20") }
     var newPlayerName by remember { mutableStateOf("") }
+    var newCatError by remember { mutableStateOf<String?>(null) }
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
@@ -80,6 +81,7 @@ fun GamesScreen(viewModel: ScoreboardViewModel) {
                 Column {
                     viewModel.categories.forEachIndexed { index, c ->
                         var priceText by remember(c.id) { mutableStateOf(c.price.toString()) }
+                        var priceError by remember(c.id) { mutableStateOf<String?>(null) }
 
                         Row(
                             Modifier
@@ -110,7 +112,13 @@ fun GamesScreen(viewModel: ScoreboardViewModel) {
                                     value = priceText,
                                     onValueChange = {
                                         priceText = it
-                                        viewModel.updateCategoryPrice(c.id, it.toIntOrNull() ?: 0)
+                                        when (val result = validateAmount(it, "Price")) {
+                                            is AmountResult.Valid -> {
+                                                priceError = null
+                                                viewModel.updateCategoryPrice(c.id, result.value)
+                                            }
+                                            is AmountResult.Invalid -> priceError = result.message
+                                        }
                                     },
                                     modifier = Modifier.width(46.dp),
                                     singleLine = true,
@@ -146,6 +154,14 @@ fun GamesScreen(viewModel: ScoreboardViewModel) {
                                 )
                             }
                         }
+                        priceError?.let { msg ->
+                            Text(
+                                text = "${c.name}: $msg (not saved)",
+                                color = RedColor,
+                                fontSize = 12.sp,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                        }
                         if (index < viewModel.categories.size - 1) {
                             HorizontalDivider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
                         }
@@ -161,13 +177,13 @@ fun GamesScreen(viewModel: ScoreboardViewModel) {
                     ) {
                         CustomDarkInput(
                             value = newCatName,
-                            onValueChange = { newCatName = it },
+                            onValueChange = { newCatName = it; newCatError = null },
                             placeholder = "Game name",
                             modifier = Modifier.weight(1f)
                         )
                         CustomDarkInput(
                             value = newCatPrice,
-                            onValueChange = { newCatPrice = it },
+                            onValueChange = { newCatPrice = it; newCatError = null },
                             placeholder = "Birr",
                             modifier = Modifier.width(80.dp),
                             textColor = GoldColor,
@@ -175,9 +191,17 @@ fun GamesScreen(viewModel: ScoreboardViewModel) {
                         )
                         Button(
                             onClick = {
-                                viewModel.addCategory(newCatName, newCatPrice.toIntOrNull() ?: 20)
-                                newCatName = ""
-                                newCatPrice = "20"
+                                val priceResult = validateAmount(newCatPrice, "Price")
+                                if (newCatName.isBlank()) {
+                                    newCatError = "Game name is required"
+                                } else if (priceResult is AmountResult.Invalid) {
+                                    newCatError = priceResult.message
+                                } else if (priceResult is AmountResult.Valid) {
+                                    viewModel.addCategory(newCatName, priceResult.value)
+                                    newCatName = ""
+                                    newCatPrice = "20"
+                                    newCatError = null
+                                }
                             },
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.buttonColors(
@@ -193,6 +217,14 @@ fun GamesScreen(viewModel: ScoreboardViewModel) {
                                 fontWeight = FontWeight.Bold
                             )
                         }
+                    }
+                    newCatError?.let { msg ->
+                        Text(
+                            text = msg,
+                            color = RedColor,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(top = 6.dp)
+                        )
                     }
                 }
             }
